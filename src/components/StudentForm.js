@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { registerStudent } from '../api/script';
+import { registerStudent, findResponsibleByDocument } from '../api/script';
 
 function StudentForm() {
     const [studentData, setStudentData] = useState({
@@ -8,9 +8,12 @@ function StudentForm() {
         course: '',
         academicYear: '',
         relationWithResponsible: '',
+        responsibleDocumentType: '',
+        responsibleDocumentNumber: '',
     });
 
     const [responseMessage, setResponseMessage] = useState('');
+    const [responsible, setResponsible] = useState(null);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -26,15 +29,36 @@ function StudentForm() {
             name: studentData.studentName,
             course: studentData.course,
             academicYear: parseInt(studentData.academicYear),
-            responsible: null,
+            responsible: responsible ? responsible.id : null,
             relationWithResponsible: studentData.relationWithResponsible,
         };
 
         try {
-            const result = await registerStudent(student); // Usando la función importada
+            const result = await registerStudent(student);
             setResponseMessage(result.message);
         } catch (error) {
             setResponseMessage('An error occurred while registering the student.');
+        }
+    };
+
+    const handleFindResponsible = async () => {
+        const documentValues = parseInt(studentData.responsibleDocumentNumber, 10);
+        if (isNaN(documentValues)) {
+            setResponseMessage('Please enter a valid number for the document.');
+            return;
+        }
+
+        try {
+            const responsibleData = await findResponsibleByDocument(studentData.responsibleDocumentType, documentValues);
+            if (responsibleData) {
+                setResponsible(responsibleData);
+                setResponseMessage('Responsible found successfully!');
+            } else {
+                setResponsible(null);
+                setResponseMessage('No responsible found with the provided document.');
+            }
+        } catch (error) {
+            setResponseMessage('An error occurred while finding the responsible.');
         }
     };
 
@@ -57,8 +81,38 @@ function StudentForm() {
                 <label htmlFor="relationWithResponsible">Relation with Responsible:</label>
                 <input type="text" id="relationWithResponsible" value={studentData.relationWithResponsible} onChange={handleChange} required /><br />
 
+                <h3>Find Responsible</h3>
+                <label htmlFor="responsibleDocumentType">Document Type:</label>
+                <input
+                    type="text"
+                    id="responsibleDocumentType"
+                    value={studentData.responsibleDocumentType}
+                    onChange={handleChange}
+                    required
+                /><br />
+
+                <label htmlFor="responsibleDocumentNumber">Document Number (Long):</label>
+                <input
+                    type="text" // Mantener como texto para soportar números largos
+                    id="responsibleDocumentNumber"
+                    value={studentData.responsibleDocumentNumber}
+                    onChange={handleChange}
+                    required
+                /><br />
+
+                <button type="button" onClick={handleFindResponsible}>Find Responsible</button><br />
+
+                {responsible && (
+                    <div>
+                        <h4>Responsible Found:</h4>
+                        <p>Name: {responsible.name}</p>
+                        <p>Phone: {responsible.phoneNumber}</p>
+                    </div>
+                )}
+
                 <button type="button" onClick={handleRegisterStudent}>Register Student</button>
             </form>
+
             <div>{responseMessage}</div>
         </div>
     );
