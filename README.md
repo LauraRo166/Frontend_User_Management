@@ -1,22 +1,22 @@
 ### User Management
 
-** Este proyecto es una aplicación React creada usando `create-react-app`. Sigue las instrucciones a continuación para configurarlo y ejecutarlo en tu entorno de desarrollo. **
+**Este proyecto es una aplicación React creada usando `create-react-app`. Sigue las instrucciones a continuación para configurarlo y ejecutarlo en tu entorno de desarrollo.**
 
 ### Creación del Proyecto
 
-** Este proyecto se creó con el siguiente comando en la terminal: **
+**Este proyecto se creó con el siguiente comando en la terminal:**
 
-```bash
-npx create-react-app usermanagement
 
-    Nota: Al crear el proyecto, es importante que el nombre esté en minúsculas debido a las restricciones de npm.
+    npx create-react-app usermanagement
+
+Nota: Al crear el proyecto, es importante que el nombre esté en minúsculas debido a las restricciones de npm.
 
 Requisitos Previos
 
 Asegúrate de tener Node.js y npm instalados en tu sistema. Puedes verificarlo ejecutando estos comandos:
 
-node -v
-npm -v
+    node -v
+    npm -v
 
 Instalación
 
@@ -29,19 +29,19 @@ Ejecución del Proyecto
 
 Una vez que hayas instalado todas las dependencias, puedes iniciar el servidor de desarrollo con el siguiente comando:
 
-npm start
+    npm start
 
 Este comando arrancará la aplicación y la abrirá automáticamente en tu navegador en la dirección http://localhost:3000.
 Actualización de npm
 
 Se recomienda que mantengas npm actualizado para evitar problemas de compatibilidad. Puedes actualizar npm con el siguiente comando:
 
-npm install -g npm@latest
+    npm install -g npm@latest
 
 Notas Adicionales
 
-    Para detener el servidor de desarrollo, presiona Ctrl + C en la terminal.
-    Si experimentas errores adicionales, intenta borrar el caché de npm con npm cache clean --force y luego reinstala las dependencias.
+Para detener el servidor de desarrollo, presiona Ctrl + C en la terminal.
+Si experimentas errores adicionales, intenta borrar el caché de npm con npm cache clean --force y luego reinstala las dependencias.
 
 ¡Listo! Ahora tienes toda la información necesaria para ejecutar este proyecto en React.
 
