@@ -64,18 +64,22 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
     }
 }
 
-export async function findResponsibleByDocument(typeDocument, numberDocument) {
+export async function findResponsibleByDocument(typeDocumentResponsible, numberDocument) {
     try {
+        const url = new URL(`${apiUrl}/findResponsibleByDocument`);
+        const params = {
+            responsibleDocType: typeDocumentResponsible,
+            responsibleDocNumber: numberDocument
+        };
+        url.search = new URLSearchParams(params).toString();
+
         console.log(numberDocument);
-        const response = await fetch(`${apiUrl}/findResponsibleByDocument`, {
+
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                typeDocument: typeDocument,
-                numberDocument: numberDocument
-            })
         });
 
         if (!response.ok) {
@@ -90,5 +94,4 @@ export async function findResponsibleByDocument(typeDocument, numberDocument) {
         throw error;
     }
 }
-
 

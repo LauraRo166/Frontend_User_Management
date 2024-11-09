@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { registerStudent, findResponsibleByDocument } from '../api/script';
+import { registerStudent, findResponsibleByDocument} from '../api/script';
 
 function StudentForm() {
     const [studentData, setStudentData] = useState({
@@ -8,8 +8,8 @@ function StudentForm() {
         course: '',
         academicYear: '',
         relationWithResponsible: '',
-        responsibleDocumentType: '',
         responsibleDocumentNumber: '',
+        responsibleDocumentType: '',
     });
 
     const [responseMessage, setResponseMessage] = useState('');
@@ -47,7 +47,6 @@ function StudentForm() {
             setResponseMessage('Please enter a valid number for the document.');
             return;
         }
-
         try {
             const responsibleData = await findResponsibleByDocument(studentData.responsibleDocumentType, documentValues);
             if (responsibleData) {
@@ -93,7 +92,7 @@ function StudentForm() {
 
                 <label htmlFor="responsibleDocumentNumber">Document Number (Long):</label>
                 <input
-                    type="text" // Mantener como texto para soportar números largos
+                    type="text"
                     id="responsibleDocumentNumber"
                     value={studentData.responsibleDocumentNumber}
                     onChange={handleChange}
