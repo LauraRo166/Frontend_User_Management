@@ -3,12 +3,11 @@ import { registerResponsible } from '../api/script';
 
 function ResponsibleForm() {
     const [responsibleData, setResponsibleData] = useState({
-        responsibleName: '',
-        responsibleEmail: '',
-        responsiblePhone: '',
-        responsibleAddress: '',
-        responsibleDocument: '',
-        typeDocument: '',
+        name: '',
+        document: '',
+        siteDocument: '',
+        phoneNumber: '',
+        email: '',
     });
 
     const [responseMessage, setResponseMessage] = useState('');
@@ -22,7 +21,7 @@ function ResponsibleForm() {
     };
 
     const handleRegisterResponsible = async () => {
-        const documentValue = parseInt(responsibleData.responsibleDocument, 10);
+        const documentValue = parseInt(responsibleData.document, 10);
 
         if (isNaN(documentValue)) {
             setResponseMessage('Please enter a valid number for the document.');
@@ -32,11 +31,10 @@ function ResponsibleForm() {
         try {
             const result = await registerResponsible(
                 documentValue,
-                responsibleData.typeDocument,
-                responsibleData.responsibleName,
-                responsibleData.responsiblePhone,
-                responsibleData.responsibleEmail,
-                responsibleData.responsibleAddress
+                responsibleData.siteDocument,
+                responsibleData.name,
+                responsibleData.phoneNumber,
+                responsibleData.email
             );
             setResponseMessage(result.message);
         } catch (error) {
@@ -48,23 +46,20 @@ function ResponsibleForm() {
         <div>
             <h2>Register Responsible</h2>
             <form>
-                <label htmlFor="responsibleName">Name:</label>
-                <input type="text" id="responsibleName" value={responsibleData.responsibleName} onChange={handleChange} required /><br />
+                <label htmlFor="name">Name:</label>
+                <input type="text" id="name" value={responsibleData.name} onChange={handleChange} required /><br />
 
-                <label htmlFor="responsibleEmail">Email:</label>
-                <input type="email" id="responsibleEmail" value={responsibleData.responsibleEmail} onChange={handleChange} required /><br />
+                <label htmlFor="email">Email:</label>
+                <input type="email" id="email" value={responsibleData.email} onChange={handleChange} required /><br />
 
-                <label htmlFor="responsiblePhone">Phone Number:</label>
-                <input type="text" id="responsiblePhone" value={responsibleData.responsiblePhone} onChange={handleChange} required /><br />
+                <label htmlFor="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" value={responsibleData.phoneNumber} onChange={handleChange} required /><br />
 
-                <label htmlFor="responsibleAddress">Address:</label>
-                <input type="text" id="responsibleAddress" value={responsibleData.responsibleAddress} onChange={handleChange} required /><br />
+                <label htmlFor="document">Document:</label>
+                <input type="text" id="document" value={responsibleData.document} onChange={handleChange} required /><br />
 
-                <label htmlFor="responsibleDocument">Document:</label>
-                <input type="text" id="responsibleDocument" value={responsibleData.responsibleDocument} onChange={handleChange} required /><br />
-
-                <label htmlFor="typeDocument">Type of Document:</label>
-                <input type="text" id="typeDocument" value={responsibleData.typeDocument} onChange={handleChange} required /><br />
+                <label htmlFor="siteDocument">Type of Document:</label>
+                <input type="text" id="siteDocument" value={responsibleData.siteDocument} onChange={handleChange} required /><br />
 
                 <button type="button" onClick={handleRegisterResponsible}>Register Responsible</button>
             </form>

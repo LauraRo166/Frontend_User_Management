@@ -10,12 +10,13 @@ export async function registerStudent(studentData) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                studentId: studentData.id,
+                id: studentData.id,
                 name: studentData.name,
+                document: studentData.document,
+                documentType: studentData.documentType,
                 course: studentData.course,
-                academicYear: studentData.academicYear,
-                responsible: studentData.responsible,
-                relationWithResponsible: studentData.relationWithResponsible
+                grade: studentData.grade,
+                responsibleDocument: studentData.responsibleDocument,  // send the responsible document
             })
         });
 
@@ -42,7 +43,7 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                document: numberDocument,
+                document: numberDocument,  // Adjusted to match the field name from the API
                 typeDocument: newTypeDocument,
                 name: newName,
                 phoneNumber: newPhoneNumber,
@@ -64,16 +65,13 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
     }
 }
 
-export async function findResponsibleByDocument(typeDocumentResponsible, numberDocument) {
+export async function findResponsibleByDocument(numberDocument) {
     try {
         const url = new URL(`${apiUrl}/findResponsibleByDocument`);
         const params = {
-            responsibleDocType: typeDocumentResponsible,
             responsibleDocNumber: numberDocument
         };
         url.search = new URLSearchParams(params).toString();
-
-        console.log(numberDocument);
 
         const response = await fetch(url, {
             method: 'GET',
