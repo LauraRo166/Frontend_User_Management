@@ -58,7 +58,7 @@ function ResponsibleForm() {
                 <label htmlFor="document">Document:</label>
                 <input type="text" id="document" value={responsibleData.document} onChange={handleChange} required /><br />
 
-                <label htmlFor="siteDocument">Type of Document:</label>
+                <label htmlFor="siteDocument">Site of Document:</label>
                 <input type="text" id="siteDocument" value={responsibleData.siteDocument} onChange={handleChange} required /><br />
 
                 <button type="button" onClick={handleRegisterResponsible}>Register Responsible</button>

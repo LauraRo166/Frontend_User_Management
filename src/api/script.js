@@ -15,8 +15,8 @@ export async function registerStudent(studentData) {
                 document: studentData.document,
                 documentType: studentData.documentType,
                 course: studentData.course,
-                grade: studentData.grade,
-                responsibleDocument: studentData.responsibleDocument,  // send the responsible document
+                responsibleDocument: responsible ? responsible.document : null,
+                // send the responsible document
             })
         });
 
@@ -33,9 +33,15 @@ export async function registerStudent(studentData) {
     }
 }
 
-export async function registerResponsible(numberDocument, newTypeDocument, newName, newPhoneNumber, newEmail, newAddress) {
+export async function registerResponsible(numberDocument, newTypeDocument, newName, newPhoneNumber, newEmail) {
     try {
-        console.log('Responsible data being sent:', numberDocument);
+        console.log('Responsible data being sent:', {
+            document: numberDocument,
+            siteDocument: newTypeDocument,
+            name: newName,
+            phoneNumber: newPhoneNumber,
+            email: newEmail
+        });
 
         const response = await fetch(`${apiUrl}/registerResponsible`, {
             method: 'POST',
@@ -43,12 +49,11 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                document: numberDocument,  // Adjusted to match the field name from the API
-                typeDocument: newTypeDocument,
+                document: numberDocument,
+                siteDocument: newTypeDocument,
                 name: newName,
                 phoneNumber: newPhoneNumber,
-                email: newEmail,
-                address: newAddress
+                email: newEmail
             })
         });
 
@@ -60,10 +65,11 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
 
         return await response.json();
     } catch (error) {
-        console.error('Error registering responsible:', error);
-        throw error;
+        console.error('Error registering responsible:', error.message);
+        throw new Error('An error occurred while registering the responsible person.');
     }
 }
+
 
 export async function findResponsibleByDocument(numberDocument) {
     try {
