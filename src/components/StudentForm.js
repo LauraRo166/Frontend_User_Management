@@ -8,9 +8,7 @@ function StudentForm() {
         document: '',
         documentType: '',
         course: '',
-        grade: '',
         responsibleDocument: '',
-        relationWithResponsible: '',
     });
 
     const [responseMessage, setResponseMessage] = useState('');
@@ -31,7 +29,6 @@ function StudentForm() {
             document: parseInt(studentData.document, 10),
             documentType: studentData.documentType,
             course: studentData.course,
-            grade: studentData.grade,
             responsibleDocument: responsible ? responsible.document : null,
         };
 
@@ -88,9 +85,6 @@ function StudentForm() {
 
                 <label htmlFor="course">Course:</label>
                 <input type="text" id="course" value={studentData.course} onChange={handleChange} required /><br />
-
-                <label htmlFor="grade">Grade:</label>
-                <input type="text" id="grade" value={studentData.grade} onChange={handleChange} required /><br />
 
                 <h3>Find Responsible</h3>
                 <label htmlFor="responsibleDocument">Responsible Document Number:</label>
