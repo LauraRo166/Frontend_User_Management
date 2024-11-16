@@ -14,11 +14,10 @@ function StudentForm() {
 
     const [responseMessage, setResponseMessage] = useState('');
     const [responsible, setResponsible] = useState(null);
-    const [grades, setGrades] = useState([]);  // For storing grades
-    const [courses, setCourses] = useState([]);  // For storing courses of the selected grade
+    const [grades, setGrades] = useState([]);
+    const [courses, setCourses] = useState([]);
 
     useEffect(() => {
-        // Simulate fetching available grades from an API or predefined list
         const gradeList = [
             'Prejardin', 'Jardin', 'Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto',
             'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo'
@@ -39,13 +38,13 @@ function StudentForm() {
         setStudentData((prevState) => ({
             ...prevState,
             grade: selectedGrade,
-            course: null,  // Reset course when grade changes
+            course: null,
         }));
 
         if (selectedGrade) {
             try {
                 const gradeData = await findGradeByName(selectedGrade);
-                setCourses(gradeData.courses);  // Populate the course list based on the selected grade
+                setCourses(gradeData.courses);
             } catch (error) {
                 setResponseMessage('Error fetching courses for the selected grade.');
             }
@@ -54,16 +53,16 @@ function StudentForm() {
 
     const handleRegisterStudent = async () => {
         const student = {
-            id: parseInt(studentData.studentId, 10),
+            id: studentData.studentId,
             name: studentData.studentName,
-            document: parseInt(studentData.document, 10),
+            document: studentData.document,
             documentType: studentData.documentType,
-            course: studentData.course,  // Pass the whole course object
+            course: studentData.course,
             responsibleDocument: responsible ? responsible.document : null,
         };
 
-        if (isNaN(student.id) || isNaN(student.document)) {
-            setResponseMessage('Please enter valid numbers for student ID and document.');
+        if (!student.id || !student.document || !student.name || !student.documentType || !student.grade || !student.course) {
+            setResponseMessage('Please fill in all the fields.');
             return;
         }
 
@@ -76,10 +75,10 @@ function StudentForm() {
     };
 
     const handleFindResponsible = async () => {
-        const documentValue = parseInt(studentData.responsibleDocument, 10);
+        const documentValue = studentData.responsibleDocument;
 
-        if (isNaN(documentValue)) {
-            setResponseMessage('Please enter a valid number for the responsible document.');
+        if (!documentValue) {
+            setResponseMessage('Please enter a valid document for the responsible.');
             return;
         }
 

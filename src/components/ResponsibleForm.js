@@ -21,16 +21,14 @@ function ResponsibleForm() {
     };
 
     const handleRegisterResponsible = async () => {
-        const documentValue = parseInt(responsibleData.document, 10);
-
-        if (isNaN(documentValue)) {
-            setResponseMessage('Please enter a valid number for the document.');
+        if (!responsibleData.document || responsibleData.document.trim() === '') {
+            setResponseMessage('Please enter a valid document.');
             return;
         }
 
         try {
             const result = await registerResponsible(
-                documentValue,
+                responsibleData.document,
                 responsibleData.siteDocument,
                 responsibleData.name,
                 responsibleData.phoneNumber,
