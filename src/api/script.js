@@ -16,7 +16,6 @@ export async function registerStudent(studentData) {
                 documentType: studentData.documentType,
                 course: studentData.course,
                 responsibleDocument: responsible ? responsible.document : null,
-                // send the responsible document
             })
         });
 
@@ -97,5 +96,35 @@ export async function findResponsibleByDocument(numberDocument) {
         console.error('Error finding responsible:', error);
         throw error;
     }
+
 }
+
+export async function findGradeByName(gradeName) {
+    try {
+        const url = new URL(`${apiUrl}/findGradeByName`);
+        const params = {
+            gradeName: gradeName
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to find grade: ${response.status} - ${errorDetails}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error finding grade:', error);
+        throw error;
+    }
+}
+
 
