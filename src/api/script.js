@@ -127,4 +127,32 @@ export async function findGradeByName(gradeName) {
     }
 }
 
+export async function createCourse(courseName, gradeName) {
+    const requestBody = {
+        name: courseName,
+        grade: {
+            name: gradeName
+        },
+        students: []
+    };
 
+    try {
+        const response = await fetch('/api/courses/createCourse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error);
+        }
+
+        const createdCourse = await response.json();
+        console.log('Course created successfully:', createdCourse);
+    } catch (error) {
+        console.error('Error creating course:', error.message);
+    }
+}
