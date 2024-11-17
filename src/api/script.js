@@ -103,7 +103,7 @@ export async function findGradeByName(gradeName) {
     try {
         const url = new URL(`${apiUrl}/findGradeByName`);
         const params = {
-            gradeName: gradeName
+            name: gradeName
         };
         url.search = new URLSearchParams(params).toString();
 
@@ -127,16 +127,15 @@ export async function findGradeByName(gradeName) {
     }
 }
 
-export async function createCourse(courseName, gradeName) {
+export async function createCourse(courseData) {
     const requestBody = {
-        name: courseName,
-        grade: {
-            name: gradeName
-        },
-        students: []
+        name: courseData.name,
+        grade: courseData.grade,
+        students: [],
     };
 
     try {
+        console.log(requestBody);
         const response = await fetch('/api/courses/createCourse', {
             method: 'POST',
             headers: {
@@ -152,7 +151,10 @@ export async function createCourse(courseName, gradeName) {
 
         const createdCourse = await response.json();
         console.log('Course created successfully:', createdCourse);
+        return createdCourse; // Return the created course for use in the component
     } catch (error) {
         console.error('Error creating course:', error.message);
+        throw error; // Rethrow the error to be handled by the caller
     }
 }
+

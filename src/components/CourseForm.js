@@ -8,28 +8,29 @@ function CourseForm() {
     const [error, setError] = useState('');
 
     const grades = [
-        'Prejardín', 'Jardín', 'Transición', 'Primero', 'Segundo',
+        'Prejardín', 'Jardin', 'Transición', 'Primero', 'Segundo',
         'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Séptimo',
-        'Octavo', 'Noveno', 'Décimo', 'Undécimo'
+        'Octavo', 'Noveno', 'Décimo', 'Undécimo',
     ];
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const grade = await findGradeByName(gradeName);
+            const gradeObject = await findGradeByName(gradeName);
 
-            if (!grade) {
+            if (!gradeObject) {
                 throw new Error('Grade not found');
             }
 
+            // Extract only the required value for grade
+            const grade = gradeObject.id || gradeObject.name; // Adjust this based on your backend requirements
+
             const courseData = {
                 name: courseName,
-                grade,
-                students: []
+                grade, // Send only the necessary value
             };
 
-            console.log('Created course:', grade);
             const newCourse = await createCourse(courseData);
 
             setMessage(`Course created successfully: ${newCourse.name}`);
@@ -39,6 +40,7 @@ function CourseForm() {
             setMessage('');
         }
     };
+
 
     return (
         <div>
