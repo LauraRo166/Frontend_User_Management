@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createCourse, findGradeByName } from '../api/script';
+import { createCourse } from '../api/script';
 
 function CourseForm() {
     const [courseName, setCourseName] = useState('');
@@ -7,32 +7,18 @@ function CourseForm() {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    const grades = [
-        'Prejardín', 'Jardín', 'Transición', 'Primero', 'Segundo',
-        'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Séptimo',
-        'Octavo', 'Noveno', 'Décimo', 'Undécimo'
-    ];
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const courseData = {
+            name: courseName,
+            grade: { name: gradeName },
+            students: []
+        };
+
         try {
-            const grade = await findGradeByName(gradeName);
-
-            if (!grade) {
-                throw new Error('Grade not found');
-            }
-
-            const courseData = {
-                name: courseName,
-                grade,
-                students: []
-            };
-
-            console.log('Created course:', grade);
-            const newCourse = await createCourse(courseData);
-
-            setMessage(`Course created successfully: ${newCourse.name}`);
+            const createdCourse = await createCourse(courseData);
+            setMessage(`Course created successfully: ${createdCourse.name}`);
             setError('');
         } catch (error) {
             setError(`Error creating course: ${error.message}`);
@@ -56,19 +42,13 @@ function CourseForm() {
                 </div>
                 <div>
                     <label htmlFor="gradeName">Grade Name:</label>
-                    <select
+                    <input
+                        type="text"
                         id="gradeName"
                         value={gradeName}
                         onChange={(e) => setGradeName(e.target.value)}
                         required
-                    >
-                        <option value="">Select a grade</option>
-                        {grades.map((grade) => (
-                            <option key={grade} value={grade}>
-                                {grade}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
                 <div>
                     <button type="submit">Create Course</button>

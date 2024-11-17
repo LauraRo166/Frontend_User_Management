@@ -35,20 +35,21 @@ function StudentForm() {
 
     const handleGradeChange = async (e) => {
         const selectedGrade = e.target.value;
-        console.log("Grado seleccionado:", selectedGrade);
+        setStudentData((prevState) => ({
+            ...prevState,
+            grade: selectedGrade,
+            course: null,
+        }));
 
         if (selectedGrade) {
             try {
                 const gradeData = await findGradeByName(selectedGrade);
-                console.log("Datos recibidos:", gradeData);
-                //setCourses(gradeData.courses);
+                setCourses(gradeData.courses);
             } catch (error) {
-                console.error("Error al obtener los cursos:", error);
                 setResponseMessage('Error fetching courses for the selected grade.');
             }
         }
     };
-
 
     const handleRegisterStudent = async () => {
         const student = {
