@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { registerStudent, findResponsibleByDocument, findGradeByName } from '../api/script';
+import { registerStudent, findResponsibleByDocument, findGradeByName, findCoursesByGrade } from '../api/script';
 
 function StudentForm() {
     const [studentData, setStudentData] = useState({
@@ -8,7 +8,7 @@ function StudentForm() {
         document: '',
         documentType: '',
         grade: '',
-        course: null,
+        course: '', // Iniciar con un valor vacío en vez de null
         responsibleDocument: '',
     });
 
@@ -20,7 +20,7 @@ function StudentForm() {
     useEffect(() => {
         const gradeList = [
             'Prejardin', 'Jardin', 'Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto',
-            'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo'
+            'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo',
         ];
         setGrades(gradeList);
     }, []);
@@ -38,16 +38,25 @@ function StudentForm() {
         setStudentData((prevState) => ({
             ...prevState,
             grade: selectedGrade,
-            course: null,
+            course: '', // Restablecer curso al cambiar el grado
         }));
 
         if (selectedGrade) {
             try {
-                const gradeData = await findGradeByName(selectedGrade);
-                setCourses(gradeData.courses);
+                const courses = await findCoursesByGrade(selectedGrade);
+                if (courses.length > 0) {
+                    setCourses(courses);
+                    setResponseMessage(`Courses for ${selectedGrade} loaded successfully.`);
+                } else {
+                    setCourses([]);
+                    setResponseMessage(`No courses found for the selected grade.`);
+                }
             } catch (error) {
+                setCourses([]);
                 setResponseMessage('Error fetching courses for the selected grade.');
             }
+        } else {
+            setCourses([]);
         }
     };
 
@@ -57,11 +66,11 @@ function StudentForm() {
             name: studentData.studentName,
             document: studentData.document,
             documentType: studentData.documentType,
-            course: studentData.course,
+            courseName: studentData.course,
             responsibleDocument: responsible ? responsible.document : null,
         };
-
-        if (!student.id || !student.document || !student.name || !student.documentType || !student.grade || !student.course) {
+        console.log(student);
+        if (!student.id || !student.document || !student.name || !student.documentType || !student.courseName) {
             setResponseMessage('Please fill in all the fields.');
             return;
         }
@@ -125,19 +134,18 @@ function StudentForm() {
                         <label htmlFor="course">Course:</label>
                         <select
                             id="course"
-                            value={studentData.course ? studentData.course.id : ''}
+                            value={studentData.course}
                             onChange={(e) => {
-                                const selectedCourse = courses.find(course => course.id === e.target.value);
-                                setStudentData(prevState => ({
+                                setStudentData((prevState) => ({
                                     ...prevState,
-                                    course: selectedCourse
+                                    course: e.target.value,
                                 }));
                             }}
                             required
                         >
                             <option value="">Select Course</option>
-                            {courses.map((course, index) => (
-                                <option key={index} value={course.id}>{course.name}</option>
+                            {courses.map((course) => (
+                                <option key={course.id} value={course.id}>{course.name}</option>
                             ))}
                         </select><br />
                     </>

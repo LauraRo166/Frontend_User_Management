@@ -128,15 +128,14 @@ export async function findGradeByName(gradeName) {
 }
 
 export async function createCourse(courseData) {
-    const requestBody = {
-        name: courseData.name,
-        grade: courseData.grade,
-        students: [],
-    };
-
     try {
-        console.log(requestBody);
-        const response = await fetch('/api/courses/createCourse', {
+        const url = new URL(`${apiUrl}/createCourse`);
+        const requestBody = {
+            name: courseData.name,
+            gradeName: courseData.gradeName,
+        };
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -145,16 +144,43 @@ export async function createCourse(courseData) {
         });
 
         if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error);
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to create course: ${response.status} - ${errorDetails}`);
         }
 
-        const createdCourse = await response.json();
-        console.log('Course created successfully:', createdCourse);
-        return createdCourse; // Return the created course for use in the component
+        return await response.json();
     } catch (error) {
-        console.error('Error creating course:', error.message);
-        throw error; // Rethrow the error to be handled by the caller
+        console.error('Error creating course:', error);
+        throw error;
+    }
+}
+
+export async function findCoursesByGrade(gradeName) {
+    try {
+        const url = new URL(`${apiUrl}/findCoursesByGrade`);
+        const params = {
+            gradeName: gradeName
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to find courses: ${response.status} - ${errorDetails}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error finding courses:', error);
+        throw error;
     }
 }
 

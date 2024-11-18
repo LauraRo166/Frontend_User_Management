@@ -18,17 +18,13 @@ function CourseForm() {
 
         try {
             const gradeObject = await findGradeByName(gradeName);
-
             if (!gradeObject) {
                 throw new Error('Grade not found');
             }
 
-            // Extract only the required value for grade
-            const grade = gradeObject.id || gradeObject.name; // Adjust this based on your backend requirements
-
             const courseData = {
                 name: courseName,
-                grade, // Send only the necessary value
+                gradeName:gradeName,
             };
 
             const newCourse = await createCourse(courseData);
