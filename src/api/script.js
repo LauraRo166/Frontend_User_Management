@@ -14,9 +14,8 @@ export async function registerStudent(studentData) {
                 name: studentData.name,
                 document: studentData.document,
                 documentType: studentData.documentType,
-                course: studentData.course,
-                grade: studentData.grade,
-                responsibleDocument: studentData.responsibleDocument,  // send the responsible document
+                courseName: studentData.courseName,
+                responsibleDocument: studentData.responsibleDocument,
             })
         });
 
@@ -33,9 +32,15 @@ export async function registerStudent(studentData) {
     }
 }
 
-export async function registerResponsible(numberDocument, newTypeDocument, newName, newPhoneNumber, newEmail, newAddress) {
+export async function registerResponsible(numberDocument, newTypeDocument, newName, newPhoneNumber, newEmail) {
     try {
-        console.log('Responsible data being sent:', numberDocument);
+        console.log('Responsible data being sent:', {
+            document: numberDocument,
+            siteDocument: newTypeDocument,
+            name: newName,
+            phoneNumber: newPhoneNumber,
+            email: newEmail
+        });
 
         const response = await fetch(`${apiUrl}/registerResponsible`, {
             method: 'POST',
@@ -43,12 +48,11 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                document: numberDocument,  // Adjusted to match the field name from the API
-                typeDocument: newTypeDocument,
+                document: numberDocument,
+                siteDocument: newTypeDocument,
                 name: newName,
                 phoneNumber: newPhoneNumber,
-                email: newEmail,
-                address: newAddress
+                email: newEmail
             })
         });
 
@@ -60,10 +64,11 @@ export async function registerResponsible(numberDocument, newTypeDocument, newNa
 
         return await response.json();
     } catch (error) {
-        console.error('Error registering responsible:', error);
-        throw error;
+        console.error('Error registering responsible:', error.message);
+        throw new Error('An error occurred while registering the responsible person.');
     }
 }
+
 
 export async function findResponsibleByDocument(numberDocument) {
     try {
@@ -89,6 +94,92 @@ export async function findResponsibleByDocument(numberDocument) {
         return await response.json();
     } catch (error) {
         console.error('Error finding responsible:', error);
+        throw error;
+    }
+
+}
+
+export async function findGradeByName(gradeName) {
+    try {
+        const url = new URL(`${apiUrl}/findGradeByName`);
+        const params = {
+            name: gradeName
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to find grade: ${response.status} - ${errorDetails}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error finding grade:', error);
+        throw error;
+    }
+}
+
+export async function createCourse(courseData) {
+    try {
+        const url = new URL(`${apiUrl}/createCourse`);
+        const requestBody = {
+            name: courseData.name,
+            gradeName: courseData.gradeName,
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to create course: ${response.status} - ${errorDetails}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error creating course:', error);
+        throw error;
+    }
+}
+
+export async function findCoursesByGrade(gradeName) {
+    try {
+        const url = new URL(`${apiUrl}/findCoursesByGrade`);
+        const params = {
+            gradeName: gradeName
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server responded with error:', response.status, errorDetails);
+            throw new Error(`Failed to find courses: ${response.status} - ${errorDetails}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error finding courses:', error);
         throw error;
     }
 }

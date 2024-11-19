@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { registerStudent, findResponsibleByDocument } from '../api/script';
+import React, { useState, useEffect } from 'react';
+import { registerStudent, findResponsibleByDocument, findGradeByName, findCoursesByGrade } from '../api/script';
 
 function StudentForm() {
     const [studentData, setStudentData] = useState({
@@ -7,14 +7,23 @@ function StudentForm() {
         studentName: '',
         document: '',
         documentType: '',
-        course: '',
         grade: '',
+        course: '',
         responsibleDocument: '',
-        relationWithResponsible: '',
     });
 
     const [responseMessage, setResponseMessage] = useState('');
     const [responsible, setResponsible] = useState(null);
+    const [grades, setGrades] = useState([]);
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+        const gradeList = [
+            'Prejardin', 'Jardín', 'Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto',
+            'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo',
+        ];
+        setGrades(gradeList);
+    }, []);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -24,19 +33,44 @@ function StudentForm() {
         }));
     };
 
+    const handleGradeChange = async (e) => {
+        const selectedGrade = e.target.value;
+        setStudentData((prevState) => ({
+            ...prevState,
+            grade: selectedGrade,
+            course: '', // Restablecer curso al cambiar el grado
+        }));
+
+        if (selectedGrade) {
+            try {
+                const courses = await findCoursesByGrade(selectedGrade);
+                if (courses.length > 0) {
+                    setCourses(courses);
+                    setResponseMessage(`Courses for ${selectedGrade} loaded successfully.`);
+                } else {
+                    setCourses([]);
+                    setResponseMessage(`No courses found for the selected grade.`);
+                }
+            } catch (error) {
+                setCourses([]);
+                setResponseMessage('Error fetching courses for the selected grade.');
+            }
+        } else {
+            setCourses([]);
+        }
+    };
+
     const handleRegisterStudent = async () => {
         const student = {
-            id: parseInt(studentData.studentId, 10),
+            id: studentData.studentId,
             name: studentData.studentName,
-            document: parseInt(studentData.document, 10),
+            document: studentData.document,
             documentType: studentData.documentType,
-            course: studentData.course,
-            grade: studentData.grade,
+            courseName: studentData.course,
             responsibleDocument: responsible ? responsible.document : null,
         };
-
-        if (isNaN(student.id) || isNaN(student.document)) {
-            setResponseMessage('Please enter valid numbers for student ID and document.');
+        if (!student.id || !student.document || !student.name || !student.documentType || !student.courseName) {
+            setResponseMessage('Please fill in all the fields.');
             return;
         }
 
@@ -49,10 +83,10 @@ function StudentForm() {
     };
 
     const handleFindResponsible = async () => {
-        const documentValue = parseInt(studentData.responsibleDocument, 10);
+        const documentValue = studentData.responsibleDocument;
 
-        if (isNaN(documentValue)) {
-            setResponseMessage('Please enter a valid number for the responsible document.');
+        if (!documentValue) {
+            setResponseMessage('Please enter a valid document for the responsible.');
             return;
         }
 
@@ -86,11 +120,35 @@ function StudentForm() {
                 <label htmlFor="documentType">Document Type:</label>
                 <input type="text" id="documentType" value={studentData.documentType} onChange={handleChange} required /><br />
 
-                <label htmlFor="course">Course:</label>
-                <input type="text" id="course" value={studentData.course} onChange={handleChange} required /><br />
-
                 <label htmlFor="grade">Grade:</label>
-                <input type="text" id="grade" value={studentData.grade} onChange={handleChange} required /><br />
+                <select id="grade" value={studentData.grade} onChange={handleGradeChange} required>
+                    <option value="">Select Grade</option>
+                    {grades.map((grade, index) => (
+                        <option key={index} value={grade}>{grade}</option>
+                    ))}
+                </select><br />
+
+                {studentData.grade && (
+                    <>
+                        <label htmlFor="course">Course:</label>
+                        <select
+                            id="course"
+                            value={studentData.course}
+                            onChange={(e) => {
+                                setStudentData((prevState) => ({
+                                    ...prevState,
+                                    course: e.target.value,
+                                }));
+                            }}
+                            required
+                        >
+                            <option value="">Select Course</option>
+                            {courses.map((course) => (
+                                <option key={course.id} value={course.id}>{course.name}</option>
+                            ))}
+                        </select><br />
+                    </>
+                )}
 
                 <h3>Find Responsible</h3>
                 <label htmlFor="responsibleDocument">Responsible Document Number:</label>
