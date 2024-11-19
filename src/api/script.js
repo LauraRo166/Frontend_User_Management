@@ -14,7 +14,7 @@ export async function registerStudent(studentData) {
                 name: studentData.name,
                 document: studentData.document,
                 documentType: studentData.documentType,
-                course: studentData.course,
+                courseName: studentData.courseName,
                 responsibleDocument: studentData.responsibleDocument,
             })
         });
