@@ -21,16 +21,14 @@ function ResponsibleForm() {
     };
 
     const handleRegisterResponsible = async () => {
-        const documentValue = parseInt(responsibleData.document, 10);
-
-        if (isNaN(documentValue)) {
-            setResponseMessage('Please enter a valid number for the document.');
+        if (!responsibleData.document || responsibleData.document.trim() === '') {
+            setResponseMessage('Please enter a valid document.');
             return;
         }
 
         try {
             const result = await registerResponsible(
-                documentValue,
+                responsibleData.document,
                 responsibleData.siteDocument,
                 responsibleData.name,
                 responsibleData.phoneNumber,
@@ -58,7 +56,7 @@ function ResponsibleForm() {
                 <label htmlFor="document">Document:</label>
                 <input type="text" id="document" value={responsibleData.document} onChange={handleChange} required /><br />
 
-                <label htmlFor="siteDocument">Type of Document:</label>
+                <label htmlFor="siteDocument">Site of Document:</label>
                 <input type="text" id="siteDocument" value={responsibleData.siteDocument} onChange={handleChange} required /><br />
 
                 <button type="button" onClick={handleRegisterResponsible}>Register Responsible</button>
