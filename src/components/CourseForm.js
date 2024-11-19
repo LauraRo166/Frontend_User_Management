@@ -8,7 +8,7 @@ function CourseForm() {
     const [error, setError] = useState('');
 
     const grades = [
-        'Prejardín', 'Jardin', 'Transición', 'Primero', 'Segundo',
+        'Prejardín', 'Jardín', 'Transición', 'Primero', 'Segundo',
         'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Séptimo',
         'Octavo', 'Noveno', 'Décimo', 'Undécimo',
     ];

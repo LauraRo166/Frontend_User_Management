@@ -8,7 +8,7 @@ function StudentForm() {
         document: '',
         documentType: '',
         grade: '',
-        course: '', // Iniciar con un valor vacío en vez de null
+        course: '',
         responsibleDocument: '',
     });
 
@@ -19,7 +19,7 @@ function StudentForm() {
 
     useEffect(() => {
         const gradeList = [
-            'Prejardin', 'Jardin', 'Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto',
+            'Prejardin', 'Jardín', 'Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto',
             'Quinto', 'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo',
         ];
         setGrades(gradeList);
@@ -69,7 +69,6 @@ function StudentForm() {
             courseName: studentData.course,
             responsibleDocument: responsible ? responsible.document : null,
         };
-        console.log(student);
         if (!student.id || !student.document || !student.name || !student.documentType || !student.courseName) {
             setResponseMessage('Please fill in all the fields.');
             return;
